@@ -87,7 +87,7 @@ class DFPairDataset(data.Dataset):
     def _load_kpt(self, name):
         string = self.annotation_file.loc[name]
         array = pose_utils.load_pose_cords_from_strings(string['keypoints_y'], string['keypoints_x'])
-        pose  = pose_utils.cords_to_map(array, self.load_size, (256, 176))
+        pose  = pose_utils.cords_to_map(array, self.load_size)
         pose = np.transpose(pose,(2, 0, 1))
         pose = torch.Tensor(pose)
         return pose  
@@ -122,7 +122,13 @@ class DFVisualDataset(DFPairDataset):
         #patch_root = "/".join(dataroot.split("/")[:-1])
         #self.standard_patches = [self._load_img(os.path.join(patch_root, "dtd/images", fn)).unsqueeze(0) for fn in TEST_PATCHES]
         #self.standard_patches = torch.cat(self.standard_patches)
-        self.selected_keys = [ "gfla", "jacket", "lace", "pattern", "plaid", "plain", "print", "strip", "flower"]
+        with open(eval_anns_path, 'r') as f:
+            lines = f.readlines()[3:]
+            self.selected_keys = []
+            tmp = np.arange(len(lines)/2).astype(np.int32)
+            for t in tmp:
+                self.selected_keys.append(str(t))
+        # self.selected_keys = [ "gfla", "jacket", "lace", "pattern", "plaid", "plain", "print", "strip", "flower"]
         self.image_dir = dataroot +  "/test"
         self.mask_dir = dataroot +  "/testM_lip"
 
@@ -153,10 +159,10 @@ class DFVisualDataset(DFPairDataset):
         for line in raw_anns[pose_cnt+1:]:
             category, key = line[:-1].split(", ")
             self.attr_keys[category].append(key)
-        mixed = []
-        for category in ['flower','plaid','print','strip']:
-            mixed.append(self.attr_keys[category][0])
-        self.attr_keys["mixed"] = mixed
+        # mixed = []
+        # for category in ['flower','plaid','print','strip']:
+        #     mixed.append(self.attr_keys[category][0])
+        # self.attr_keys["mixed"] = mixed
 
     def get_patch_input(self):
         return torch.cat(self.standard_patches)

@@ -84,6 +84,20 @@ After the processing, you should have the dataset folder formatted like:
 
 ---
 
+## Custom Datasets
+
+1. prepare `img_highres`, `train.lst` and `test.lst`
+
+2. run `python tools/generate_fashion_datasets.py`
+
+3. prepare `fashion-pairs-train.csv` and `fashion-pairs-test.csv`
+
+4. prepare `fashion-annotation-train.csv` and `fashion-annotation-test.cvs` (18 keypoints)
+
+5. prepare `trainM_lip` and `testM_lip`
+
+6. prepare `standard_test_anns.txt`
+
 ## Run Demo
 Please download the pretrained weights from [here](https://drive.google.com/drive/folders/1-7DxUvcrC3cvQV67Z2QhRdi-9PMDC8w9?usp=sharing) and unzip at ```checkpoints/```. 
 

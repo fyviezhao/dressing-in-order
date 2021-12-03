@@ -267,12 +267,8 @@ class PerceptualCorrectness(nn.Module):
 
         source_norm = source_all/(source_all.norm(dim=2, keepdim=True)+self.eps)
         target_norm = target_all/(target_all.norm(dim=1, keepdim=True)+self.eps)
-        try:
-            correction = torch.bmm(source_norm, target_norm)                       #[b N2 N2]
-        except:
-            print("An exception occurred")
-            print(source_norm.shape)
-            print(target_norm.shape)
+        
+        correction = torch.bmm(source_norm, target_norm) #[b N2 N2]
         (correction_max,max_indices) = torch.max(correction, dim=1)
 
         # interple with bilinear sampling

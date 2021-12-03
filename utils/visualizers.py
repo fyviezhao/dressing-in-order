@@ -14,7 +14,7 @@ def define_visualizer(model_name):
 class FlowVisualizer:
         
     @staticmethod
-    def swap_garment(data, model, gid=5, display_mask=False, step=-1, prefix=""):
+    def swap_garment(data, model, gid=5, display_mask=False, step=-1, prefix="", generate_out_dir='.'):
         model.eval()
         #display_mask = True # display_mask and 'seg' in model.visual_names
         imgs, parses, poses = data
@@ -68,6 +68,11 @@ class FlowVisualizer:
 
         print_img = (print_img + 1) / 2
         print_img = print_img.float().cpu().detach()
+        tmp = print_img.permute(0,2,3,1)
+        tmp = (tmp.numpy() * 255).astype(np.uint8)
+        tmp = np.concatenate((tmp[0],tmp[1],tmp[2]),axis=1)
+        imageio.imwrite(generate_out_dir + '/' + f'{prefix}.jpg', tmp)
+        
         curr_step = step if step >= 0 else i
         if step >= 0:
             curr_step = step

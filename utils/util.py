@@ -5,7 +5,9 @@ import numpy as np
 from PIL import Image
 import os
 import argparse
-
+import cv2
+import pickle
+import random
 import torch.nn as nn
 
 COLORS = np.array([
@@ -160,3 +162,60 @@ def mkdir(path):
     """
     if not os.path.exists(path):
         os.makedirs(path)
+
+
+def load_pickle_file(pkl_path):
+    with open(pkl_path, 'rb') as f:
+        data = pickle.load(f, encoding='latin1')
+
+    return data
+
+
+def write_pickle_file(pkl_path, data_dict):
+    with open(pkl_path, 'wb') as fp:
+        pickle.dump(data_dict, fp, protocol=2)
+
+
+class ImageTransformer(object):
+    """
+    Rescale the image in a sample to a given size.
+    """
+
+    def __init__(self, output_size):
+        """
+        Args:
+            output_size (tuple or int): Desired output size. If tuple, output is matched to output_size.
+                            If int, smaller of image edges is matched to output_size keeping aspect ratio the same.
+        """
+        assert isinstance(output_size, (int, tuple))
+        self.output_size = output_size
+
+    def __call__(self, sample):
+        images = sample['images']
+        resized_images = []
+
+        for image in images:
+            image = cv2.resize(image, (self.output_size, self.output_size))
+            image = image.astype(np.float32)
+            image /= 255.0
+            image = image * 2 - 1
+
+            image = np.transpose(image, (2, 0, 1))
+
+            resized_images.append(image)
+
+        resized_images = np.stack(resized_images, axis=0)
+
+        sample['images'] = resized_images
+        return sample
+
+class ToTensor(object):
+    """
+    Convert ndarrays in sample to Tensors.
+    """
+
+    def __call__(self, sample):
+        sample['images'] = torch.Tensor(sample['images']).float()
+        sample['smpls'] = torch.Tensor(sample['smpls']).float()
+
+        return sample

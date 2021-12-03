@@ -70,7 +70,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--dataroot', type=str, default="data", help='data root')
+    parser.add_argument('--dataroot', type=str, default="/data/Datasets/DiOR/DeepFashion", help='data root')
 
     args = parser.parse_args()
     

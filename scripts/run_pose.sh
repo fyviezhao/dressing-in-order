@@ -1,4 +1,4 @@
-export DATAROOT=...
+export DATAROOT=/data/Datasets/DiOR/DeepFashion
 
 python train.py --dataroot $DATAROOT \
 --name 'flownet_warmup' \

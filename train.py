@@ -39,7 +39,7 @@ def main():
     opt.square = False
     dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
     dataset_size = len(dataset)    # get the number of images in the dataset.
-    print('The number of training images = %d' % dataset_size)
+    print('Batch size = %d, with %d training images in each batch' % (opt.batch_size,dataset_size))
     visual_ds = create_visual_ds(opt)
     
     # set up model
@@ -65,10 +65,9 @@ def main():
     
     # train
     epoch_start_time = time.time()  # timer for entire epoch
-    while total_iters < opt.n_epochs + opt.n_epochs_decay + 1: 
+    while total_iters < opt.n_epochs + opt.n_epochs_decay: 
         for data in dataset:  # inner loop within one epoch
-            total_iters += 1
-            if total_iters > opt.n_epochs + opt.n_epochs_decay + 1:
+            if total_iters > opt.n_epochs + opt.n_epochs_decay:
                 break
                 
             
@@ -110,13 +109,14 @@ def main():
                 model.compute_visuals(total_iters, loss_only=False)
                 if opt.run_test:
                     generate_val_img(visual_ds, model, opt, step=total_iters)
-                print("at %d, compute visuals" % total_iters)
+                print("at total iter-%d, compute visuals" % total_iters)
                 
             # update learning rate
             if total_iters % opt.lr_update_unit == 0:
                 print(total_iters)
                 model.update_learning_rate()                     # update learning rates at the end of every iteration.
-                
+            
+            total_iters += 1
 
     model.save_networks('latest', total_iters)
 

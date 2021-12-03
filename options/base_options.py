@@ -22,7 +22,7 @@ class BaseOptions():
         parser.add_argument('--dataroot', type=str, default="data", help='path to img')
         parser.add_argument('--name', type=str, default='experiment_name', help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        parser.add_argument('--checkpoints_dir', type=str, default='checkpoints', help='models are saved here')
+        parser.add_argument('--checkpoints_dir', type=str, default='/data/Projects-warehouse/DiOR/checkpoints', help='models are saved here')
         
         # model parameters
         parser.add_argument('--model', type=str, default='adgan', help='chooses which model to use. [adgan]')
@@ -45,7 +45,7 @@ class BaseOptions():
         parser.add_argument('--n_cpus', default=4, type=int, help='# threads for loading data')
         parser.add_argument('--batch_size', type=int, default=8, help='input batch size')
         parser.add_argument('--max_batch_size', type=int, default=16, help='progressive training only: max input batch size')
-        parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
+        parser.add_argument('--crop_size', type=int, default=512, help='then crop to this size')
       
         # additional parameters
         parser.add_argument('--epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
